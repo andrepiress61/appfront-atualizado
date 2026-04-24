@@ -1,0 +1,87 @@
+<div class="page-wrapper">
+  <div class="screen-wrapper">
+
+    <app-side-menu active="mapa" [(menuAberto)]="menuAberto"></app-side-menu>
+
+    <div class="layout">
+      <main class="main-content" [class.expandido]="!menuAberto">
+
+        <!-- Mapa embed -->
+        <section class="mapa-card">
+          <div class="mapa-frame" *ngIf="pontos.length > 0">
+            <iframe
+              [src]="getMapaUrl()"
+              width="100%"
+              height="220"
+              style="border:0; border-radius:16px;"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+
+          <div class="mapa-placeholder" *ngIf="pontos.length === 0 && !carregando">
+            <span class="placeholder-icon">🗺️</span>
+            <p>Nenhum ponto encontrado</p>
+          </div>
+
+          <div class="mapa-loading" *ngIf="carregando">
+            <span class="spinner">⏳</span> Carregando pontos...
+          </div>
+
+          <div class="legenda">
+            <span class="legenda-item">
+              <span class="dot dot-red"></span> Você está aqui
+            </span>
+            <span class="legenda-item">
+              <span class="dot dot-green"></span> Locais de reciclagem
+            </span>
+          </div>
+        </section>
+
+        <!-- Descrições -->
+        <section class="descricoes-card">
+          <h2>Descrições dos locais</h2>
+
+          <div class="loading-box" *ngIf="carregando">
+            Carregando pontos de reciclagem...
+          </div>
+
+          <div class="erro-box" *ngIf="erro">{{ erro }}</div>
+
+          <div class="ponto-item" *ngFor="let ponto of pontos; let i = index">
+            <div class="ponto-header">
+              <span class="ponto-icone">📍</span>
+              <strong>{{ getNomePonto(ponto, i) }}</strong>
+            </div>
+
+            <div class="ponto-info">
+              <p class="ponto-coords">
+                Localização: {{ ponto.latitude }}, {{ ponto.longitude }}
+              </p>
+              <p class="ponto-tipos">
+                Tipos aceitos: {{ getTiposAceitos(ponto) }}
+              </p>
+              <p class="ponto-desc" *ngIf="ponto.descricao">{{ ponto.descricao }}</p>
+            </div>
+
+            <button
+              class="btn-como-chegar"
+              (click)="irComoChegar(ponto.latitude, ponto.longitude)"
+            >
+              🗺️ Como chegar
+            </button>
+          </div>
+
+          <div class="vazio" *ngIf="!carregando && pontos.length === 0">
+            Nenhum ponto de reciclagem encontrado.
+          </div>
+        </section>
+
+        <div class="rodape-acoes">
+          <button class="btn-voltar" (click)="irParaMenu()">← Voltar</button>
+          <button class="btn-sair" (click)="voltarParaLogin()">Sair</button>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,216 @@
+<div class="perfil-page">
+  <div class="screen-wrapper">
+
+    <app-side-menu active="perfil" [(menuAberto)]="menuAberto"></app-side-menu>
+<div class="perfil-layout">
+<main class="main-content" [class.expandido]="!menuAberto">
+        <section class="usuario-card">
+          <div class="usuario-avatar">👤</div>
+
+          <div class="usuario-info">
+            <h1>{{ nome || 'Usuário' }}</h1>
+            <p>{{ email || 'Email não informado' }}</p>
+          </div>
+        </section>
+
+        <section class="campo-card">
+          <div class="campo-linha">
+            <div class="campo-conteudo">
+              <label>EDITAR NOME</label>
+
+              <input
+                *ngIf="editandoNome"
+                type="text"
+                [(ngModel)]="nomeEditavel"
+                placeholder="Digite o nome"
+              />
+
+              <div class="campo-valor" *ngIf="!editandoNome">
+                {{ nome || 'Não informado' }}
+              </div>
+            </div>
+
+            <button
+              class="btn-editar"
+              *ngIf="!editandoNome"
+              (click)="toggleEditarNome()"
+              aria-label="Editar nome"
+              title="Editar nome"
+            >
+              ✏️
+            </button>
+
+            <button
+              class="btn-salvar"
+              *ngIf="editandoNome"
+              (click)="salvarNome()"
+              [disabled]="salvando"
+            >
+              {{ salvando ? '...' : 'Salvar' }}
+            </button>
+          </div>
+        </section>
+
+        <section class="campo-card">
+          <div class="campo-linha">
+            <div class="campo-conteudo">
+              <label>EDITAR EMAIL</label>
+
+              <input
+                *ngIf="editandoEmail"
+                type="email"
+                [(ngModel)]="emailEditavel"
+                placeholder="Digite o email"
+              />
+
+              <div class="campo-valor" *ngIf="!editandoEmail">
+                {{ email || 'Não informado' }}
+              </div>
+            </div>
+
+            <button
+              class="btn-editar"
+              *ngIf="!editandoEmail"
+              (click)="toggleEditarEmail()"
+              aria-label="Editar email"
+              title="Editar email"
+            >
+              ✏️
+            </button>
+
+            <button
+              class="btn-salvar"
+              *ngIf="editandoEmail"
+              (click)="salvarEmail()"
+              [disabled]="salvando"
+            >
+              {{ salvando ? '...' : 'Salvar' }}
+            </button>
+          </div>
+        </section>
+
+        <section class="campo-card">
+          <div class="campo-linha">
+            <div class="campo-conteudo">
+              <label>EDITAR CIDADE</label>
+
+              <input
+                *ngIf="editandoCidade"
+                type="text"
+                [(ngModel)]="cidadeEditavel"
+                placeholder="Digite a cidade"
+              />
+
+              <div class="campo-valor" *ngIf="!editandoCidade">
+                {{ cidade || 'Não informada' }}
+              </div>
+            </div>
+
+            <button
+              class="btn-editar"
+              *ngIf="!editandoCidade"
+              (click)="toggleEditarCidade()"
+              aria-label="Editar cidade"
+              title="Editar cidade"
+            >
+              ✏️
+            </button>
+
+            <button
+              class="btn-salvar"
+              *ngIf="editandoCidade"
+              (click)="salvarCidade()"
+              [disabled]="salvando"
+            >
+              {{ salvando ? '...' : 'Salvar' }}
+            </button>
+          </div>
+        </section>
+
+        <section class="campo-card">
+          <div class="campo-linha">
+            <div class="campo-conteudo">
+              <label>ALTERAR SENHA</label>
+
+              <input
+                *ngIf="editandoSenha"
+                type="password"
+                [(ngModel)]="novaSenha"
+                placeholder="Digite a nova senha"
+              />
+
+              <div class="campo-valor" *ngIf="!editandoSenha">••••••••••••</div>
+            </div>
+
+            <button
+              class="btn-editar"
+              *ngIf="!editandoSenha"
+              (click)="toggleEditarSenha()"
+              aria-label="Alterar senha"
+              title="Alterar senha"
+            >
+              ✏️
+            </button>
+
+            <button
+              class="btn-salvar"
+              *ngIf="editandoSenha"
+              (click)="salvarSenha()"
+              [disabled]="salvando"
+            >
+              {{ salvando ? '...' : 'Salvar' }}
+            </button>
+          </div>
+        </section>
+
+        <div class="divisor"></div>
+
+        <section class="dica-card">
+          <div class="dica-topo">
+            <h2>DICA DO DIA:</h2>
+            <span class="icone-dica">💡</span>
+          </div>
+
+          <div class="dica-box">
+            <h3>{{ dicaDoDia.titulo }}</h3>
+            <p>{{ dicaDoDia.descricao }}</p>
+          </div>
+        </section>
+
+        <section class="avaliacao-box">
+          <p>ESSA DICA FOI ÚTIL?</p>
+
+          <div class="avaliacao-botoes">
+            <button
+              class="btn-avaliacao"
+              [class.ativo]="avaliacaoDica === 'sim'"
+              (click)="avaliarDica('sim')"
+            >
+              👍 Sim
+            </button>
+
+            <button
+              class="btn-avaliacao"
+              [class.ativo]="avaliacaoDica === 'nao'"
+              (click)="avaliarDica('nao')"
+            >
+              👎 Não
+            </button>
+          </div>
+        </section>
+
+        <div class="feedback" *ngIf="mensagem">
+          {{ mensagem }}
+        </div>
+
+        <div class="feedback erro" *ngIf="erro">
+          {{ erro }}
+        </div>
+
+        <div class="rodape-acoes">
+          <button class="btn-sair" (click)="sair()">Sair</button>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<div class="consumo-page">
+  <div class="screen-wrapper">
+
+    <app-side-menu active="consumo" [(menuAberto)]="menuAberto"></app-side-menu>
+
+    <div class="consumo-layout">
+      <main class="main-content" [class.expandido]="!menuAberto">
+
+        <!-- FORM -->
+        <section class="card-principal">
+          <h1>NOVO REGISTRO:</h1>
+
+          <div class="tipos-grid">
+            <button
+              *ngFor="let tipo of tipos"
+              class="tipo-btn"
+              [class.ativo]="tipoSelecionado === tipo.chave"
+              (click)="selecionarTipo(tipo.chave)"
+            >
+              <span class="tipo-emoji">{{ tipo.emoji }}</span>
+              <span class="tipo-texto">{{ tipo.label }}</span>
+            </button>
+          </div>
+
+          <label class="label-campo">VALOR:</label>
+          <input
+            class="input-campo"
+            type="text"
+            [(ngModel)]="valor"
+            placeholder="R$0,00"
+          />
+
+          <label class="label-campo">DATA:</label>
+          <div class="data-wrap">
+            <span class="icone-calendario">📅</span>
+            <input
+              class="input-campo input-data"
+              type="date"
+              [(ngModel)]="dataSelecionada"
+              [max]="dataMaxima"
+            />
+          </div>
+
+          <div class="acoes-form">
+            <button class="btn-salvar" (click)="salvarRegistro()" [disabled]="salvando">
+              {{ salvando ? '...' : (editandoId ? 'ATUALIZAR' : 'SALVAR') }}
+            </button>
+            <button
+              *ngIf="editandoId"
+              class="btn-cancelar"
+              (click)="cancelarEdicao()"
+              type="button"
+            >
+              CANCELAR
+            </button>
+          </div>
+
+          <div class="feedback sucesso" *ngIf="mensagem">{{ mensagem }}</div>
+          <div class="feedback erro" *ngIf="erro">{{ erro }}</div>
+        </section>
+
+        <!-- HISTÓRICO sempre visível -->
+        <section class="historico-card">
+          <div class="historico-header">
+            <span class="card-tag">LOG</span>
+            <h2>HISTÓRICO</h2>
+          </div>
+
+          <div class="texto-status carregando" *ngIf="carregando">
+            <span class="loading-dots"><span></span><span></span><span></span></span>
+          </div>
+
+          <div class="texto-status vazio" *ngIf="!carregando && registros.length === 0">
+            <span>📋</span>
+            <p>Nenhum registro ainda</p>
+          </div>
+
+          <div class="lista-registros" *ngIf="!carregando && registros.length > 0">
+            <div
+              class="registro-item"
+              *ngFor="let item of registros"
+            >
+              <div class="registro-topo">
+                <button class="btn-expandir" (click)="toggleExpandir(item)">
+                  {{ item.expandido ? '⌄' : '›' }}
+                </button>
+                <div class="registro-resumo">
+                  <span class="registro-tipo">
+                    {{ tipoEmoji(item.tipo) }} {{ tipoLabel(item.tipo) }}
+                  </span>
+                  <span class="registro-valor">{{ formatarMoeda(item.gasto) }}</span>
+                </div>
+                <button class="btn-excluir" (click)="excluirRegistro(item.id)">🗑️</button>
+              </div>
+
+              <div class="registro-detalhes" *ngIf="item.expandido">
+                <p><strong>Gasto:</strong> {{ formatarMoeda(item.gasto) }}</p>
+                <p><strong>Data:</strong> {{ item.dataFormatada }}</p>
+                <p><strong>Descrição:</strong> {{ item.descricao || 'Sem descrição' }}</p>
+                <div class="detalhes-acoes">
+                  <button class="btn-editar-item" (click)="editarRegistro(item)">Editar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+</div>

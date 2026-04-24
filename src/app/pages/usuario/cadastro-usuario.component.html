@@ -1,0 +1,67 @@
+<div class="page-bg">
+  <section class="cadastro-screen">
+    <div class="logo-area">
+      <img src="assets/logo-ecototally.png" alt="EcoTotally" class="logo-img" />
+    </div>
+
+    <div class="cadastro-card">
+      <h1 class="titulo">Cadastro</h1>
+
+      <div class="campo">
+        <label>Nome completo</label>
+        <input
+          type="text"
+          [(ngModel)]="nome"
+          placeholder="inserir nome"
+        />
+      </div>
+
+      <div class="linha-dupla">
+        <div class="campo">
+          <label>Email</label>
+          <input
+            type="email"
+            [(ngModel)]="email"
+            placeholder="nome@gmail.com"
+          />
+        </div>
+
+        <div class="campo">
+          <label>Estado</label>
+          <input
+            type="text"
+            [(ngModel)]="cidade"
+            placeholder="Ex: Brasília"
+          />
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Senha</label>
+
+        <div class="senha-wrap">
+          <input
+            [type]="mostrarSenha ? 'text' : 'password'"
+            [(ngModel)]="senha"
+            placeholder="••••••••••••"
+          />
+
+          <button type="button" class="toggle-senha" (click)="alternarSenha()">
+            {{ mostrarSenha ? '🙈' : '👁️' }}
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-principal" (click)="cadastrar()" [disabled]="carregando">
+        {{ carregando ? 'Criando...' : 'Criar conta' }}
+      </button>
+
+      <div class="divisor"></div>
+
+      <button type="button" class="btn-secundario" (click)="voltarParaLogin()">Já tenho conta</button>
+
+      <p class="mensagem sucesso" *ngIf="mensagem">{{ mensagem }}</p>
+      <p class="mensagem erro" *ngIf="erro">{{ erro }}</p>
+    </div>
+  </section>
+</div>

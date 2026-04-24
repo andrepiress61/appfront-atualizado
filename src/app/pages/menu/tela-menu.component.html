@@ -1,0 +1,295 @@
+<div class="menu-page">
+  <div class="screen-wrapper">
+
+    <app-side-menu active="menu" [(menuAberto)]="menuAberto"></app-side-menu>
+    <div class="menu-layout">
+      <main class="main-content" [class.expandido]="!menuAberto">
+        <div class="logo-area">
+          <img src="/assets/logo-ecototally.png" alt="Logo EcoTotally" class="logo" />
+        </div>
+
+        <section class="usuario-card">
+          <div class="usuario-header">
+            <h1>{{ usuarioNome }}</h1>
+            <button class="btn-olho" (click)="toggleResumo()">
+              {{ mostrarResumo ? '👁' : '🙈' }}
+            </button>
+          </div>
+
+          <div class="resumo-box" *ngIf="mostrarResumo">
+            <div class="mini-card">
+              <span class="mini-label">REGISTROS</span>
+              <strong>{{ registro }}</strong>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">TOTAL GASTO</span>
+              <strong>{{ totalGasto | currency: 'BRL' : 'symbol' : '1.2-2' }}</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="bloco-card">
+          <h2>PONTOS: {{ pontos }}</h2>
+          <div class="bloco-interno">
+            <p>RANK.REGIONAL</p>
+            <strong>{{ rankRegional }}</strong>
+          </div>
+        </section>
+
+        <section class="bloco-card atalhos-card">
+          <h2>ACESSO RÁPIDO</h2>
+          <div class="atalhos-grid">
+            <button class="atalho-btn" (click)="irParaConsumo()">
+              <span>📄</span><small>Consumo</small>
+            </button>
+            <button class="atalho-btn" (click)="irParaGraficos()">
+              <span>📊</span><small>Gráficos</small>
+            </button>
+            <button class="atalho-btn" (click)="irParaSimulacao()">
+              <span>⚡</span><small>Simulação</small>
+            </button>
+            <button class="atalho-btn" (click)="irParaMapa()">
+              <span>📍</span><small>Mapa</small>
+            </button>
+          </div>
+        </section>
+
+        <!-- FERRAMENTAS: INSIGHTS + PDF -->
+        <section class="bloco-card ferramentas-card">
+          <h2>FERRAMENTAS</h2>
+          <div class="ferramentas-grid">
+            <button class="ferramenta-btn" (click)="abrirInsights()">
+              <span class="ferramenta-icone">💡</span>
+              <span class="ferramenta-label">INSIGHTS</span>
+              <small class="ferramenta-desc">Análise de consumo com IA</small>
+            </button>
+            <button class="ferramenta-btn" (click)="exportarPDF()" [disabled]="exportandoPDF">
+              <span class="ferramenta-icone">{{ exportandoPDF ? '⏳' : '📄' }}</span>
+              <span class="ferramenta-label">RELATÓRIO PDF</span>
+              <small class="ferramenta-desc">{{ exportandoPDF ? 'Gerando...' : 'Exportar histórico' }}</small>
+            </button>
+          </div>
+          <p class="feedback erro" *ngIf="erroPDF">✕ {{ erroPDF }}</p>
+        </section>
+
+        <section class="bloco-card">
+          <div class="titulo-com-acao">
+            <h2>CONFIGURAÇÕES</h2>
+          </div>
+          <div class="bloco-interno lista-config">
+            <div class="config-item" *ngFor="let config of configuracoes">{{ config }}</div>
+          </div>
+        </section>
+
+        <section class="bloco-card">
+          <div class="titulo-com-acao">
+            <h2>METAS</h2>
+            <button class="btn-add-meta" (click)="abrirInputMeta()">{{ mostrarInputMeta ? '✕' : '+' }}</button>
+          </div>
+
+          <div class="meta-form" *ngIf="mostrarInputMeta">
+            <div class="meta-field">
+              <label>TIPO DA META</label>
+              <input type="text" [(ngModel)]="novaMetaTipo" placeholder="Ex: Energia, Água, Transporte..." />
+            </div>
+            <div class="meta-field">
+              <label>VALOR OBJETIVO (R$)</label>
+              <input type="number" [(ngModel)]="novaMetaValor" placeholder="0" min="0" step="0.01" />
+            </div>
+            <div class="meta-field-row">
+              <div class="meta-field">
+                <label>DATA INÍCIO</label>
+                <div class="meta-data-wrap">
+                  <span class="meta-cal">📅</span>
+                  <input class="meta-input-data" type="date" [(ngModel)]="novaMetaDataInicio" [max]="novaMetaDataFim || undefined" />
+                </div>
+              </div>
+              <div class="meta-field">
+                <label>DATA FIM</label>
+                <div class="meta-data-wrap">
+                  <span class="meta-cal">📅</span>
+                  <input class="meta-input-data" type="date" [(ngModel)]="novaMetaDataFim" [min]="novaMetaDataInicio || undefined" />
+                </div>
+              </div>
+            </div>
+            <button class="btn-salvar-meta" (click)="adicionarMeta()">Salvar Meta</button>
+          </div>
+
+          <div class="bloco-interno lista-metas">
+            <div class="meta-item" *ngFor="let meta of metas">
+              <div class="meta-info">
+                <span class="meta-tipo">{{ meta.tipo_meta }}</span>
+                <span class="meta-valor">R$ {{ meta.valor_objetivo | number:'1.2-2' }}</span>
+                <span class="meta-datas" *ngIf="meta.data_inicio">{{ meta.data_inicio | date:'dd/MM/yy' }} → {{ meta.data_fim | date:'dd/MM/yy' }}</span>
+              </div>
+              <button class="btn-remover-meta" (click)="confirmarRemocaoMeta(meta.id)">✕</button>
+            </div>
+            <p class="texto-vazio" *ngIf="metas.length === 0">Nenhuma meta cadastrada ainda.</p>
+          </div>
+        </section>
+
+        <div class="feedback erro" *ngIf="erro">{{ erro }}</div>
+
+        <div class="rodape-acoes">
+          <button class="btn-chat-float" (click)="abrirChat()">💬 Chat IA</button>
+          <button class="btn-voltar-login" (click)="voltarParaLogin()">Sair</button>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CHAT IA -->
+<div class="chat-overlay" *ngIf="chatAberto" (click)="fecharChat()"></div>
+<div class="chat-modal" *ngIf="chatAberto">
+  <div class="chat-header">
+    <div class="chat-titulo">
+      <span>🤖</span>
+      <span>EcoBot IA</span>
+    </div>
+    <button class="chat-fechar" (click)="fecharChat()">✕</button>
+  </div>
+
+  <div class="chat-mensagens" #chatContainer>
+    <div class="chat-boas-vindas" *ngIf="chatMensagens.length === 0">
+      <span class="bot-avatar">🌿</span>
+      <p>Olá! Sou o EcoBot, seu assistente de sustentabilidade. Como posso te ajudar?</p>
+    </div>
+
+    <div
+      class="msg-wrapper"
+      *ngFor="let msg of chatMensagens"
+      [class.msg-user]="msg.role === 'user'"
+      [class.msg-bot]="msg.role === 'assistant'"
+    >
+      <span class="msg-avatar" *ngIf="msg.role === 'assistant'">🌿</span>
+      <div class="msg-balao">{{ msg.content }}</div>
+      <span class="msg-avatar user-avatar" *ngIf="msg.role === 'user'">👤</span>
+    </div>
+
+    <div class="msg-wrapper msg-bot" *ngIf="chatCarregando">
+      <span class="msg-avatar">🌿</span>
+      <div class="msg-balao msg-digitando">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <input
+      type="text"
+      class="chat-input"
+      [(ngModel)]="chatTexto"
+      placeholder="Digite sua mensagem..."
+      (keydown.enter)="enviarMensagemChat()"
+      [disabled]="chatCarregando"
+    />
+    <button
+      class="chat-send"
+      (click)="enviarMensagemChat()"
+      [disabled]="chatCarregando || !chatTexto.trim()"
+    >
+      {{ chatCarregando ? '⏳' : '➤' }}
+    </button>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR EXCLUSÃO META -->
+<div class="modal-overlay" *ngIf="modalConfirmMetaAberto" (click)="cancelarRemocaoMeta()"></div>
+<div class="modal-confirm" *ngIf="modalConfirmMetaAberto">
+  <div class="confirm-icon">🎯</div>
+  <h3>Excluir meta?</h3>
+  <p>Esta ação não pode ser desfeita.</p>
+  <div class="confirm-acoes">
+    <button type="button" class="btn-confirm-cancelar" (click)="cancelarRemocaoMeta()">Cancelar</button>
+    <button type="button" class="btn-confirm-excluir" (click)="removerMetaConfirmado()">Excluir</button>
+  </div>
+</div>
+
+<!-- MODAL INSIGHTS -->
+<div class="modal-overlay" *ngIf="modalInsightsAberto" (click)="fecharInsights()"></div>
+<div class="modal-insights" *ngIf="modalInsightsAberto">
+  <div class="insights-header">
+    <div class="insights-titulo">
+      <span class="card-tag">IA</span>
+      <h2>INSIGHTS</h2>
+    </div>
+    <button class="btn-fechar-modal" (click)="fecharInsights()">✕</button>
+  </div>
+
+  <div class="insights-loading" *ngIf="carregandoInsights">
+    <span class="loading-dots"><span></span><span></span><span></span></span>
+    <p>Analisando seus dados...</p>
+  </div>
+
+  <div class="insights-erro" *ngIf="!carregandoInsights && erroInsights">
+    <span>⚠️</span>
+    <p>{{ erroInsights }}</p>
+  </div>
+
+  <div class="insights-conteudo" *ngIf="!carregandoInsights && insights && !erroInsights">
+
+    <div class="insight-resumo" *ngIf="insights.resumo">
+      <span class="insight-label">RESUMO</span>
+      <p>{{ insights.resumo }}</p>
+    </div>
+
+    <div class="insight-resumo" *ngIf="insights.tipo">
+      <span class="insight-label">TIPO</span>
+      <p>{{ insights.tipo }}</p>
+    </div>
+
+    <div class="insight-resumo" *ngIf="insights.valor_atual !== undefined">
+      <span class="insight-label">VALOR ATUAL</span>
+      <p class="insight-valor">{{ insights.valor_atual | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+    </div>
+
+    <div class="insight-resumo" *ngIf="insights.valor_projetado !== undefined">
+      <span class="insight-label">PROJEÇÃO</span>
+      <p class="insight-valor destaque">{{ insights.valor_projetado | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+    </div>
+
+    <div class="insight-resumo" *ngIf="insights.economia_estimada !== undefined">
+      <span class="insight-label">ECONOMIA ESTIMADA</span>
+      <p class="insight-valor destaque">{{ insights.economia_estimada | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+    </div>
+
+    <div class="insight-resumo" *ngIf="insights.total_gasto !== undefined">
+      <span class="insight-label">TOTAL GASTO</span>
+      <p class="insight-valor">{{ insights.total_gasto | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+    </div>
+
+    <div class="insight-resumo" *ngIf="insights.maior_categoria">
+      <span class="insight-label">MAIOR CATEGORIA</span>
+      <p>{{ insights.maior_categoria }}</p>
+    </div>
+
+    <div class="insight-resumo" *ngIf="insights.economia_potencial !== undefined">
+      <span class="insight-label">ECONOMIA POTENCIAL</span>
+      <p class="insight-valor destaque">{{ insights.economia_potencial | currency: 'BRL' : 'symbol' : '1.2-2' }}</p>
+    </div>
+
+    <div class="insight-lista" *ngIf="insights.insights && insights.insights.length > 0">
+      <span class="insight-label">ANÁLISE</span>
+      <div class="insight-item" *ngFor="let item of insights.insights">
+        <span class="insight-bullet">💡</span>
+        <p>{{ item }}</p>
+      </div>
+    </div>
+
+    <div class="insight-lista" *ngIf="insights.recomendacoes && insights.recomendacoes.length > 0">
+      <span class="insight-label">RECOMENDAÇÕES</span>
+      <div class="insight-item" *ngFor="let rec of insights.recomendacoes">
+        <span class="insight-bullet">✅</span>
+        <p>{{ rec }}</p>
+      </div>
+    </div>
+
+    <!-- Fallback: mostrar dados brutos se nenhum campo conhecido for encontrado -->
+    <div class="insight-resumo" *ngIf="!insights.resumo && insights.tipo === undefined && insights.total_gasto === undefined && insights.valor_atual === undefined && (!insights.insights || insights.insights.length === 0)">
+      <span class="insight-label">DADOS</span>
+      <pre style="white-space:pre-wrap;font-size:12px;color:var(--text-secondary, #aaa)">{{ insights | json }}</pre>
+    </div>
+
+  </div>
+</div>

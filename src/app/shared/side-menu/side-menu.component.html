@@ -1,0 +1,41 @@
+<button
+  class="eco-menu-toggle"
+  *ngIf="!menuAberto"
+  type="button"
+  (click)="abrir()"
+  aria-label="Abrir menu"
+  title="Abrir menu"
+>
+  <span></span><span></span><span></span>
+</button>
+
+<div class="eco-menu-backdrop" *ngIf="menuAberto" (click)="fechar()"></div>
+
+<aside class="eco-sidebar" [class.aberto]="menuAberto" aria-label="Menu principal">
+  <button class="eco-close" type="button" (click)="fechar()" aria-label="Fechar menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+
+  <div class="eco-logo">
+    <img src="/assets/logo-ecototally.png" alt="EcoTotally" />
+  </div>
+
+  <nav class="eco-nav">
+    <button
+      *ngFor="let item of itens"
+      type="button"
+      class="eco-nav-btn"
+      [class.ativo]="active === item.key"
+      (click)="navegar(item)"
+      [title]="item.label"
+      [attr.aria-label]="item.label"
+    >
+      <svg *ngIf="item.icon === 'home'" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>
+      <svg *ngIf="item.icon === 'user'" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+      <svg *ngIf="item.icon === 'file'" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h6"/></svg>
+      <svg *ngIf="item.icon === 'chart'" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="11" width="3" height="5" rx="1"/><rect x="12" y="8" width="3" height="8" rx="1"/><rect x="17" y="6" width="3" height="10" rx="1"/></svg>
+      <svg *ngIf="item.icon === 'zap'" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 10-13h-7z"/></svg>
+      <svg *ngIf="item.icon === 'map'" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3z"/><path d="M9 3v15M15 6v15"/></svg>
+    </button>
+  </nav>
+</aside>

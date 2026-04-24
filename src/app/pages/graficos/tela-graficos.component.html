@@ -1,0 +1,96 @@
+<div class="graficos-page">
+  <div class="screen-wrapper">
+
+    <app-side-menu active="graficos" [(menuAberto)]="menuAberto"></app-side-menu>
+<div class="graficos-layout">
+<main class="main-content" [class.expandido]="!menuAberto">
+        <section class="painel-card">
+          <h1>
+            {{ abaAtiva === 'consumo' ? 'PAINEL DE CONSUMO' : 'PAINEL DE SIMULAÇÃO' }}
+          </h1>
+
+          <div class="resumo-box">
+            <div class="mini-card">
+              <span class="mini-label">
+                {{ abaAtiva === 'consumo' ? 'REGISTROS:' : 'SIMULAÇÕES:' }}
+              </span>
+              <strong>{{ totalRegistros }}</strong>
+            </div>
+
+            <div class="mini-card">
+              <span class="mini-label">TOTAL GASTO:</span>
+              <strong>{{ formatarMoeda(totalGasto) }}</strong>
+            </div>
+          </div>
+
+          <div class="abas-wrap">
+            <button
+              class="aba-btn"
+              [class.ativa]="abaAtiva === 'consumo'"
+              (click)="selecionarAba('consumo')"
+            >
+              GRÁFICO CONSUMO
+            </button>
+
+            <button
+              class="aba-btn"
+              [class.ativa]="abaAtiva === 'simulacao'"
+              (click)="selecionarAba('simulacao')"
+            >
+              GRÁFICO SIMULAÇÃO
+            </button>
+          </div>
+
+          <div class="grafico-card">
+            <h2>DISTRIBUIÇÃO</h2>
+
+            <div class="pizza-wrap">
+              <div class="grafico-pizza" [style.background]="graficoPizzaStyle">
+                <div class="furo-pizza"></div>
+              </div>
+
+              <div class="legenda">
+                <div class="legenda-item" *ngFor="let categoria of categorias">
+                  <span
+                    class="legenda-cor"
+                    [style.background]="categoria.cor"
+                  ></span>
+                  <span class="legenda-texto">{{ categoria.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grafico-card barras-card">
+            <h2>
+              {{ abaAtiva === 'consumo' ? 'Gastos nos últimos 7 dias' : 'Simulações nos últimos 7 dias' }}
+            </h2>
+
+            <div class="barras-wrap">
+              <div class="grafico-barras">
+                <div class="barra-coluna" *ngFor="let barra of barrasUltimos7Dias">
+                  <div class="barra-valor">
+                    <div class="barra" [style.height.%]="barra.altura"></div>
+                  </div>
+                  <span class="barra-label">{{ barra.label }}</span>
+                </div>
+              </div>
+
+              <div class="destaque-box">
+                {{ maiorCategoriaTexto }}
+              </div>
+            </div>
+          </div>
+
+          <div class="feedback erro" *ngIf="erro">
+            {{ erro }}
+          </div>
+
+          <div class="feedback carregando" *ngIf="carregando">
+            Carregando gráficos...
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>

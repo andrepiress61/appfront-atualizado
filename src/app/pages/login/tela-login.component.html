@@ -1,0 +1,114 @@
+<div class="login-page">
+  <div class="screen-wrapper">
+
+    <div class="login-layout">
+      <div class="logo-area">
+        <img src="/assets/logo-ecototally.png" alt="EcoTotally" class="logo" />
+      </div>
+
+      <div class="login-card">
+        <div class="card-header">
+          <span class="card-tag">ACESSO</span>
+          <h1>ENTRAR</h1>
+        </div>
+
+        <div class="form-fields">
+          <div class="field-group">
+            <label for="email">EMAIL</label>
+            <input
+              id="email"
+              type="email"
+              [(ngModel)]="email"
+              placeholder="seu@email.com"
+              (keydown.enter)="entrar()"
+            />
+          </div>
+
+          <div class="field-group">
+            <label for="senha">SENHA</label>
+            <div class="senha-wrapper">
+              <input
+                id="senha"
+                [type]="mostrarSenha ? 'text' : 'password'"
+                [(ngModel)]="senha"
+                placeholder="••••••••"
+                (keydown.enter)="entrar()"
+              />
+              <button type="button" class="btn-olho" (click)="alternarSenha()">
+                {{ mostrarSenha ? '🙈' : '👁' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="esqueci-link">
+            <button type="button" class="btn-esqueci" (click)="abrirModalEsqueci()">
+              Esqueci minha senha
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="btn-entrar"
+            [disabled]="carregando"
+            (click)="entrar()"
+          >
+            <span *ngIf="!carregando">ENTRAR</span>
+            <span *ngIf="carregando" class="loading-dots">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+
+          <p class="feedback erro" *ngIf="erro">✕ {{ erro }}</p>
+        </div>
+
+        <div class="login-footer">
+          <p>Não tem conta?</p>
+          <button type="button" class="btn-cadastro" (click)="irParaCadastro()">
+            CADASTRAR
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ESQUECI SENHA -->
+<div class="modal-overlay" *ngIf="modalEsqueciAberto" (click)="fecharModalEsqueci()"></div>
+<div class="modal-esqueci" *ngIf="modalEsqueciAberto">
+  <div class="modal-header">
+    <span class="card-tag">RECUPERAR</span>
+    <h2>SENHA</h2>
+    <button type="button" class="btn-fechar-modal" (click)="fecharModalEsqueci()">✕</button>
+  </div>
+
+  <p class="modal-descricao">Informe seu email e enviaremos um link para redefinir sua senha.</p>
+
+  <div class="field-group">
+    <label>EMAIL</label>
+    <input
+      type="email"
+      [(ngModel)]="emailRecuperacao"
+      placeholder="seu@email.com"
+      (keydown.enter)="enviarRecuperacao()"
+    />
+  </div>
+
+  <button
+    type="button"
+    class="btn-enviar-recuperacao"
+    [disabled]="carregandoRecuperacao || !!mensagemRecuperacao"
+    (click)="enviarRecuperacao()"
+  >
+    <span *ngIf="!carregandoRecuperacao">ENVIAR EMAIL</span>
+    <span *ngIf="carregandoRecuperacao" class="loading-dots">
+      <span></span><span></span><span></span>
+    </span>
+  </button>
+
+  <p class="feedback sucesso" *ngIf="mensagemRecuperacao">✓ {{ mensagemRecuperacao }}</p>
+  <p class="feedback erro" *ngIf="erroRecuperacao">✕ {{ erroRecuperacao }}</p>
+
+  <button type="button" class="btn-voltar-login" (click)="fecharModalEsqueci()" *ngIf="mensagemRecuperacao">
+    Voltar ao login
+  </button>
+</div>
